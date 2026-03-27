@@ -750,4 +750,102 @@ a:focus {
 }
 
 
+/* =========================================
+   INTERACTIVE DIAGRAM STYLES
+   ========================================= */
+:root {
+    --bg-page: #f9f9f9;
+    --bg-panel: #ffffff;
+    --bg-controls: transparent;
+    --text-dark: #222;
+    --text-main: #333;
+    --text-muted: #666;
+    --text-light: #aaa;
+    --region-obs: #e0e0e0;
+    --region-exp: #f4f0e6;
+    --theme-blue-main: #4682b4;
+    --theme-blue-light: #add8e6;
+    --theme-green-main: #228b22;
+    --theme-green-light: #90ee90;
+    --theme-orange-main: #e67e22;
+    --stroke-thin: 1.5px;
+    --stroke-normal: 2px;
+    --stroke-thick: 2.5px;
+    --stroke-profile: 3px;
+    --stroke-profile-obs: 3.5px;
+    --guide-dark: #000;
+    --guide-main: #666;
+    --guide-muted: #999;
+    --guide-light: #bbb;
+    --guide-faded: #ccc;
+    --point-main: #e74c3c;
+    --point-hover: #c0392b;
+    --point-stroke: #fff;
+    --point-expected: #ccc;
+}
+
+.viz-container {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    background: var(--bg-controls);
+}
+
+.viz-col {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background: var(--bg-panel);
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.controls {
+    margin-bottom: 10px;
+    background: var(--bg-controls);
+    padding: 0;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.controls select {
+    padding: 5px;
+    font-size: 14px;
+    border-radius: 4px;
+    border: 1px solid var(--guide-faded);
+}
+
+.controls label { font-weight: bold; color: #444; }
+#priorSymbolDisplay { font-size: 16px; color: var(--text-main); }
+
+/* CHART ELEMENTS */
+.axis-line { stroke: var(--text-dark); stroke-width: var(--stroke-normal); fill: none; stroke-linecap: round; }
+.shaded-region { fill: var(--region-obs); opacity: 0.8; pointer-events: none; }
+.shaded-region-expected { fill: var(--region-exp); opacity: 0.7; pointer-events: none; }
+.dist-region-k { fill: var(--theme-blue-light); opacity: 0.5; pointer-events: none; }
+.dist-curve-k { stroke: var(--theme-blue-main); stroke-width: var(--stroke-normal); fill: none; pointer-events: none; }
+.dist-region-m { fill: var(--theme-green-light); opacity: 0.5; pointer-events: none; }
+.dist-curve-m { stroke: var(--theme-green-main); stroke-width: var(--stroke-normal); fill: none; pointer-events: none; }
+.guide-line, .guide-diagonal, .guide-current-t { stroke: var(--guide-main); stroke-width: var(--stroke-thin); stroke-dasharray: 4, 4; fill: none; }
+.guide-light, .guide-expected { stroke: var(--guide-faded); stroke-width: var(--stroke-thin); stroke-dasharray: 4, 4; fill: none; }
+.guide-expected { stroke: var(--guide-light); }
+.curve-drop { stroke: var(--theme-orange-main); stroke-width: var(--stroke-thick); fill: none; pointer-events: none; }
+.observed-profile { stroke: #444; stroke-width: var(--stroke-profile-obs); stroke-linejoin: round; stroke-linecap: round; fill: none; pointer-events: none; }
+.expected-profile { stroke: var(--guide-light); stroke-width: var(--stroke-profile); stroke-linejoin: round; stroke-linecap: round; fill: none; pointer-events: none; stroke-dasharray: 6, 2; }
+.point { fill: var(--point-main); cursor: pointer; stroke: var(--point-stroke); stroke-width: var(--stroke-normal); transition: fill 0.2s; }
+.point:hover { fill: var(--point-hover); }
+.point-expected { fill: var(--point-expected); stroke: var(--guide-muted); stroke-width: var(--stroke-thin); pointer-events: none; }
+.axis-title { font-size: 14px; fill: #444; font-weight: bold; }
+.plot-title { font-size: 15px; fill: var(--text-dark); font-weight: bold; }
+.region-label { font-size: 14px; fill: var(--text-muted); pointer-events: none; text-anchor: middle; font-weight: 500; }
+.region-label-expected { font-size: 14px; fill: var(--text-light); pointer-events: none; text-anchor: middle; font-weight: 500; }
+
+/* MATHJAX */
+.mjx-container { font-size: 28px; pointer-events: none; font-weight: normal; }
+.mjx-container svg { shape-rendering: geometricPrecision; display: block; }
+.mjx-container svg path { fill: currentColor; stroke: none; }
+
+
 
