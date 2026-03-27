@@ -109,6 +109,9 @@
   <script defer src="static/js/bulma-slider.min.js"></script>
   <script defer src="static/js/index.js"></script>
   <script defer src="static/js/diagrams.js"></script>
+    <script defer src="static/js/visualizer.js"></script>
+  <script defer src="static/js/simulators.js"></script>
+  <script defer src="static/js/empirical_main.js"></script>
 
   <script src="https://d3js.org/d3.v7.min.js"></script>
   <script>
@@ -224,7 +227,6 @@
 
 
 
-<!-- Paper poster -->
 <section class="hero is-small is-light">
   <div class="hero-body">
     <div class="container">
@@ -234,26 +236,150 @@
       Drag the red handles to adjust the shape of the observed profile $\hat{P}$.
 
       <div style="display: flex; flex-direction: column; align-items: center; margin-top: 20px; width: 100%; overflow-x: auto;">
-          <div class="viz-container">
-              <div class="viz-col" id="col-left"></div>
-              <div class="viz-col" id="col-right">
-                  <div class="controls">
-                      <label for="priorSelect">Prior:</label>
-                      <select id="priorSelect">
-                          <option value="length">Length</option>
-                          <option value="algorithmic">Algorithmic</option>
-                          <option value="speed">Speed</option>
-                      </select>
-                      <span id="priorSymbolDisplay"></span>
-                  </div>
-              </div>
+        <div class="viz-container">
+          <div class="viz-col" id="col-left"></div>
+          <div class="viz-col" id="col-right">
+            <div class="controls">
+              <label for="priorSelect">Prior:</label>
+              <select id="priorSelect">
+                <option value="length">Length</option>
+                <option value="algorithmic">Algorithmic</option>
+                <option value="speed">Speed</option>
+              </select>
+              <span id="priorSymbolDisplay"></span>
+            </div>
           </div>
-      </div>
-
+        </div>
       </div>
     </div>
-  </section>
-<!--End paper poster -->
+  </div>
+</section>
+
+<section class="section">
+  <div class="container is-max-desktop empirical-wrapper">
+    <h2 class="title is-3 has-text-centered">Empirical Results</h2>
+
+    <div id="tag-vis" class="vis-module">
+        <h3 class="title is-4">1. Tag Machines</h3>
+        <div class="emp-container">
+            <div class="emp-charts">
+                <div class="chart-wrapper chart-container"><canvas class="plot-canvas"></canvas><svg class="plot-svg"></svg></div>
+                <div class="chart-wrapper progress-container"><canvas class="prog-canvas"></canvas><svg class="prog-svg"></svg></div>
+            </div>
+            <div class="emp-sidebar">
+                <div class="emp-controls">
+                    <label>Prior:</label>
+                    <select class="prior-select">
+                        <option value="uniform">Uniform</option>
+                        <option value="length">Length</option>
+                        <option value="algorithmic">Algorithmic</option>
+                        <option value="speed">Speed</option>
+                    </select>
+                    <span class="prior-symbol-display"></span>
+                </div>
+                <div class="list-title output-title"></div>
+                <div class="list-box output-list-content"></div>
+                <div class="list-title list-title-flex program-title"></div>
+                <div class="list-box program-list-content"></div>
+            </div>
+        </div>
+
+        <div class="machine-section">
+            <h4 class="title is-6">2-Tag Machine Execution (Initial: aaa)</h4>
+            <div class="machine-controls">
+                <label>a: <input type="text" id="rule-a" placeholder="e.g. ab"></label>
+                <label>b: <input type="text" id="rule-b" placeholder="e.g. bcH"></label>
+                <label>c: <input type="text" id="rule-c" placeholder="e.g. ac"></label>
+                <button class="button is-small is-dark" id="btn-run-tag">Run</button>
+            </div>
+            <pre id="tag-output" class="console-output"></pre>
+        </div>
+    </div>
+
+    <hr class="emp-divider">
+
+    <div id="rule110-vis" class="vis-module">
+        <h3 class="title is-4">2. Rule 110 Cellular Automata</h3>
+        <div class="emp-container">
+            <div class="emp-charts">
+                <div class="chart-wrapper chart-container"><canvas class="plot-canvas"></canvas><svg class="plot-svg"></svg></div>
+                <div class="chart-wrapper progress-container"><canvas class="prog-canvas"></canvas><svg class="prog-svg"></svg></div>
+            </div>
+            <div class="emp-sidebar">
+                <div class="emp-controls">
+                    <label>Prior:</label>
+                    <select class="prior-select">
+                        <option value="uniform">Uniform</option>
+                        <option value="length">Length</option>
+                        <option value="algorithmic">Algorithmic</option>
+                        <option value="speed">Speed</option>
+                    </select>
+                    <span class="prior-symbol-display"></span>
+                </div>
+                <div class="list-title output-title"></div>
+                <div class="list-box output-list-content"></div>
+                <div class="list-title list-title-flex program-title"></div>
+                <div class="list-box program-list-content"></div>
+            </div>
+        </div>
+
+        <div class="machine-section">
+            <h4 class="title is-6">Rule 110 Cellular Automaton (Tape: 512 bits)</h4>
+            <div class="machine-controls">
+                <label>Tape: <input type="text" id="ca-program" placeholder="e.g. 100101"></label>
+                <button class="button is-small is-dark" id="btn-run-ca">Run (Max 20k steps)</button>
+                <span id="ca-status"></span>
+            </div>
+            <div id="ca-viewport">
+                <canvas id="ca-canvas"></canvas>
+            </div>
+            <pre id="ca-final-output"></pre>
+        </div>
+    </div>
+
+    <hr class="emp-divider">
+
+    <div id="bf-vis" class="vis-module">
+        <h3 class="title is-4">3. Brainfuck</h3>
+        <div class="emp-container">
+            <div class="emp-charts">
+                <div class="chart-wrapper chart-container"><canvas class="plot-canvas"></canvas><svg class="plot-svg"></svg></div>
+                <div class="chart-wrapper progress-container"><canvas class="prog-canvas"></canvas><svg class="prog-svg"></svg></div>
+            </div>
+            <div class="emp-sidebar">
+                <div class="emp-controls">
+                    <label>Prior:</label>
+                    <select class="prior-select">
+                        <option value="uniform">Uniform</option>
+                        <option value="length">Length</option>
+                        <option value="algorithmic">Algorithmic</option>
+                        <option value="speed">Speed</option>
+                    </select>
+                    <span class="prior-symbol-display"></span>
+                </div>
+                <div class="list-title output-title"></div>
+                <div class="list-box output-list-content"></div>
+                <div class="list-title list-title-flex program-title"></div>
+                <div class="list-box program-list-content"></div>
+            </div>
+        </div>
+
+        <div class="machine-section">
+            <h4 class="title is-6">Brainfuck Execution</h4>
+            <div class="machine-controls">
+                <input type="text" id="bf-code" placeholder="e.g. +[+.+.+.]" class="bf-input">
+                <button class="button is-small is-dark" id="btn-run-bf">Run</button>
+            </div>
+            <div class="console-output bf-display">
+                <div><span class="bf-label">Code:</span> <span id="bf-code-display" class="bf-content"></span></div>
+                <div><span class="bf-label">Tape:</span> <span id="bf-tape-display" class="bf-content"></span></div>
+                <div><span class="bf-label">Output:</span> <span id="bf-output-display" class="bf-content bf-output-display"></span></div>
+            </div>
+        </div>
+    </div>
+
+  </div>
+</section>
 
 
 

@@ -847,5 +847,106 @@ a:focus {
 .mjx-container svg { shape-rendering: geometricPrecision; display: block; }
 .mjx-container svg path { fill: currentColor; stroke: none; }
 
+/* =========================================
+   EMPIRICAL VISUALIZER STYLES
+   ========================================= */
+.empirical-wrapper {
+    --bg-panel: #ffffff;
+    --border-color: #ddd;
+    --console-bg: #1e1e1e;
+    --console-text: #d4d4d4;
+    --bf-output-color: #ce9178;
+    --ribbon-color: #ff3c3c;
+    /* Graphing colors requested by JS */
+    --color-axis: #222;
+    --color-guide: #bbb;
+    --color-grid: rgba(150, 150, 150, 0.6);
+    --curve-inactive: rgba(70, 130, 180, 0.1);
+    --curve-active: #444444;
+    --curve-selected: #ff8c00;
+    --shade-left: rgba(216, 216, 216, 0.80);
+    --shade-right: rgba(241, 236, 224, 0.60);
+    --horizon-1: rgba(70, 130, 180, 0.4);
+    --horizon-2: rgba(70, 130, 180, 0.7);
+    --horizon-3: #4682b4;
+    --horizon-inf: #315b7e;
+    --dyn-horizon-1: #f4f0e6;
+    --dyn-horizon-2: #e3e0da;
+    --dyn-horizon-3: #cfcdca;
+    --dyn-horizon-inf: #bbbbbb;
+    --color-point: #e74c3c;
+    --color-point-hover: #c0392b;
+}
+
+.emp-divider { border: 0; border-top: 1px solid var(--border-color); margin: 40px 0; }
+
+.vis-module {
+    background: var(--bg-panel);
+    padding: 20px 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    margin-bottom: 30px;
+}
+
+.emp-container {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 20px;
+    align-items: stretch;
+}
+
+.emp-charts { display: flex; flex-direction: column; gap: 10px; }
+.chart-wrapper { position: relative; }
+.plot-canvas, .prog-canvas { position: absolute; top: 0; left: 0; z-index: 1; }
+.plot-svg, .prog-svg { position: relative; z-index: 2; pointer-events: none; }
+
+.emp-sidebar { width: 320px; display: flex; flex-direction: column; gap: 10px; }
+.emp-controls { display: flex; align-items: center; gap: 10px; font-weight: bold; }
+.emp-controls select { padding: 4px; border-radius: 4px; border: 1px solid var(--border-color); }
+.prior-symbol-display { font-size: 16px; margin-left: 10px; color: #333; }
+
+.list-title { font-weight: bold; margin-top: 10px; font-size: 14px; }
+.list-title-flex { display: flex; justify-content: space-between; }
+.runtime-label { font-weight: normal; color: #666; }
+
+.list-box {
+    flex: 1 1 0; min-height: 0;
+    border: 1px solid var(--border-color);
+    border-radius: 4px; overflow-y: auto; padding: 5px; background: #fafafa;
+}
+
+.list-item { padding: 6px 8px; cursor: pointer; border-bottom: 1px solid #eee; font-family: monospace; font-size: 13px; transition: background 0.1s; }
+.list-item:hover { background: #eaeaea; }
+.list-item.active { background: #ddd; font-weight: bold; }
+.program-item { display: flex; justify-content: space-between; }
+.prog-str { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 70%; }
+
+/* Simulators */
+.machine-section { padding-top: 20px; border-top: 1px solid var(--border-color); }
+.machine-controls { display: flex; gap: 15px; margin-bottom: 15px; align-items: center; }
+.machine-controls input { padding: 5px; border: 1px solid var(--border-color); border-radius: 4px; }
+
+.console-output {
+    background: var(--console-bg); color: var(--console-text);
+    padding: 12px; font-family: monospace; height: 150px;
+    overflow-y: auto; border-radius: 4px; white-space: pre-wrap;
+}
+
+#ca-viewport { max-height: 300px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: 4px; }
+#ca-canvas { display: block; }
+#ca-status { font-size: 12px; color: #666; }
+#ca-final-output { display: none; margin-top: 10px; padding: 10px; background: #e8e8e8; font-family: monospace; font-size: 12px; border-radius: 4px; word-break: break-all; }
+
+.bf-input { flex: 1; }
+.bf-display { height: auto; min-height: 100px; line-height: 1.5; }
+.bf-label { color: #569cd6; font-weight: bold; width: 60px; display: inline-block; }
+.bf-content { font-family: monospace; letter-spacing: 1px; }
+.code-char, .tape-cell { display: inline-block; min-width: 1.5ch; text-align: center; border-radius: 2px; }
+.code-char.active, .tape-cell.active { background: #555; color: #fff; }
+.bf-output-display { color: var(--bf-output-color); font-weight: bold; }
+
+.empirical-wrapper .point { fill: var(--color-point); cursor: pointer; stroke: #fff; stroke-width: 2px; transition: fill 0.2s; pointer-events: all; }
+.empirical-wrapper .point:hover { fill: var(--color-point-hover); }
+.guide-line-dash { stroke: var(--color-guide); stroke-width: 1.5px; stroke-dasharray: 4, 4; fill: none; }
 
 
