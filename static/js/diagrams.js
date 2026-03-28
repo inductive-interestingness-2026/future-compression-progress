@@ -30,7 +30,7 @@ const CONFIG = {
         green: "#228b22",
         orange: "#e67e22",
         dark: "#222",
-        base: "#444",
+        base: "#666",
         gray: "#777",
         grayNeutral: "#888",
         lightGray: "#999",
@@ -52,10 +52,10 @@ const CONFIG = {
  * ==========================================
  */
 let state = {
-    nx: 0.93 * CONFIG.domainMax,
-    mx: 0.30 * CONFIG.domainMax,
+    nx: 0.91 * CONFIG.domainMax,
+    mx: 0.23 * CONFIG.domainMax,
     kx: 0.65 * CONFIG.domainMax,
-    t:  0.45 * CONFIG.domainMax,
+    t:  0.40 * CONFIG.domainMax,
     prior: 'length'
 };
 
@@ -543,18 +543,18 @@ function update() {
     let labelX = state.t / 2, labelExX = state.t + (CONFIG.domainMax - state.t) / 2, regionYPos = yScale(CONFIG.domainMax) + 17;
 
     topPlot.labels.append("text").attr("class", "region-label").attr("x", xScale(labelX)).attr("y", regionYPos).text("observed:");
-    addMathLabel(topPlot.labels, "Px", xScale(labelX), regionYPos + 18, c.dark, "middle");
+    addMathLabel(topPlot.labels, "Px", xScale(labelX), regionYPos + 10, c.dark, "middle");
     topPlot.labels.append("text").attr("class", "region-label-expected").attr("x", xScale(labelExX)).attr("y", regionYPos).text("expected:");
-    addMathLabel(topPlot.labels, "ePx", xScale(labelExX), regionYPos + 18, c.lightGray, "middle");
+    addMathLabel(topPlot.labels, "ePx", xScale(labelExX), regionYPos + 12, c.lightGray, "middle");
 
     bottomPlot.labels.append("text").attr("class", "region-label").attr("x", xScale(labelX)).attr("y", regionYPos).text("observed:");
-    addMathLabel(bottomPlot.labels, "Dx", xScale(labelX), regionYPos + 18, c.dark, "middle");
+    addMathLabel(bottomPlot.labels, "Dx", xScale(labelX), regionYPos + 10, c.dark, "middle");
     bottomPlot.labels.append("text").attr("class", "region-label-expected").attr("x", xScale(labelExX)).attr("y", regionYPos).text("expected:");
-    addMathLabel(bottomPlot.labels, "eDx", xScale(labelExX), regionYPos + 18, c.lightGray, "middle");
+    addMathLabel(bottomPlot.labels, "eDx", xScale(labelExX), regionYPos + 12, c.lightGray, "middle");
 
-    addMathLabel(topPlot.labels, "probLabelM", xScale(state.t) - 15, layoutL.chartHeight + max_h_m / 2, c.green, "end");
-    addMathLabel(topPlot.labels, "probLabelK", xScale(state.kx) + 15, layoutL.chartHeight + max_h_k / 2, c.blue, "start");
-    addMathLabel(bottomPlot.labels, "probLabelMBot", xScale(state.t) - 15, layoutL.chartHeight + max_h_m / 2, c.green, "end");
+    addMathLabel(topPlot.labels, "probLabelM", xScale(state.t) - 5, layoutL.chartHeight + max_h_m / 2, c.green, "end");
+    addMathLabel(topPlot.labels, "probLabelK", xScale(state.kx) + 5, layoutL.chartHeight + max_h_k / 2, c.blue, "start");
+    addMathLabel(bottomPlot.labels, "probLabelMBot", xScale(state.t) - 5, layoutL.chartHeight + max_h_m / 2, c.green, "end");
     addMathLabel(bottomPlot.labels, "probLabelKBot", -15, yScale(min_val_k) + 30, c.blue, "end");
 
     // Guides Top & Bottom
@@ -590,7 +590,7 @@ function update() {
 
     // Scale Marker Labels
     let tL_X = [{name: 'mx', x: state.mx, y: layoutL.chartHeight + 20}, {name: 't', x: state.t, y: layoutL.chartHeight + 20}, {name: 'kx', x: state.kx, y: layoutL.chartHeight + 20}].sort((a,b) => a.x - b.x);
-    for (let i = 1; i < tL_X.length; i++) if (xScale(tL_X[i].x) - xScale(tL_X[i-1].x) < 30) tL_X[i].y = tL_X[i-1].y === layoutL.chartHeight + 20 ? layoutL.chartHeight + 42 : layoutL.chartHeight + 20;
+    for (let i = 1; i < tL_X.length; i++) if (xScale(tL_X[i].x) - xScale(tL_X[i-1].x) < 10) tL_X[i].y = tL_X[i-1].y === layoutL.chartHeight + 20 ? layoutL.chartHeight + 42 : layoutL.chartHeight + 20;
     tL_X.forEach(l => addMathLabel(topPlot.labels, l.name, xScale(l.x), l.y, c.dark, "middle"));
 
     let tL_Y = [{name: 'kx_minus_mx', y: yScale(bx)}, {name: 'nx', y: yScale(state.nx)}];
@@ -598,7 +598,7 @@ function update() {
     tL_Y.forEach(l => addMathLabel(topPlot.labels, l.name, -15, l.y - 4, c.dark, "end"));
 
     let bL_X = [{name: 'bbmx', x: state.mx, y: layoutL.chartHeight + 20}, {name: 'bbt', x: state.t, y: layoutL.chartHeight + 20}].sort((a,b) => a.x - b.x);
-    for (let i = 1; i < bL_X.length; i++) if (xScale(bL_X[i].x) - xScale(bL_X[i-1].x) < 55) bL_X[i].y = bL_X[i-1].y === layoutL.chartHeight + 20 ? layoutL.chartHeight + 42 : layoutL.chartHeight + 20;
+    for (let i = 1; i < bL_X.length; i++) if (xScale(bL_X[i].x) - xScale(bL_X[i-1].x) < 40) bL_X[i].y = bL_X[i-1].y === layoutL.chartHeight + 20 ? layoutL.chartHeight + 42 : layoutL.chartHeight + 20;
     bL_X.forEach(l => addMathLabel(bottomPlot.labels, l.name, xScale(l.x), l.y, c.dark, "middle"));
 
     let bL_Y = [{name: 'kx', y: yScale(state.kx)}, {name: 'nx', y: yScale(state.nx)}].sort((a,b) => b.y - a.y);
@@ -608,15 +608,15 @@ function update() {
     // Interactive Point Overlay Left
     topPlot.points.append("circle").attr("class", "point-expected").attr("cx", xScale(mxe)).attr("cy", yScale(kxe - mxe)).attr("r", 4);
     bottomPlot.points.append("circle").attr("class", "point-expected").attr("cx", xScale(mxe)).attr("cy", yScale(kxe)).attr("r", 4);
-    topPlot.points.append("circle").attr("class", "point").attr("cx", xScale(0)).attr("cy", yScale(state.nx)).attr("r", 6).call(dragNx_top);
-    topPlot.points.append("circle").attr("class", "point").attr("cx", xScale(state.kx)).attr("cy", yScale(0)).attr("r", 6).call(dragKx_top);
-    topPlot.points.append("circle").attr("class", "point").attr("cx", xScale(state.mx)).attr("cy", yScale(bx)).attr("r", 6).call(dragMx_top);
-    topPlot.points.append("circle").attr("class", "point").attr("cx", xScale(state.t)).attr("cy", yScale(0)).attr("r", 6).call(dragT_top);
+    topPlot.points.append("circle").attr("class", "point").attr("cx", xScale(0)).attr("cy", yScale(state.nx)).attr("r", 5).call(dragNx_top);
+    topPlot.points.append("circle").attr("class", "point").attr("cx", xScale(state.kx)).attr("cy", yScale(0)).attr("r", 5).call(dragKx_top);
+    topPlot.points.append("circle").attr("class", "point").attr("cx", xScale(state.mx)).attr("cy", yScale(bx)).attr("r", 5).call(dragMx_top);
+    topPlot.points.append("circle").attr("class", "point").attr("cx", xScale(state.t)).attr("cy", yScale(0)).attr("r", 5).call(dragT_top);
 
-    bottomPlot.points.append("circle").attr("class", "point").attr("cx", xScale(0)).attr("cy", yScale(state.nx)).attr("r", 6).call(dragNx_bottom);
-    bottomPlot.points.append("circle").attr("class", "point").attr("cx", xScale(0)).attr("cy", yScale(state.kx)).attr("r", 6).call(dragKx_bottom);
-    bottomPlot.points.append("circle").attr("class", "point").attr("cx", xScale(state.mx)).attr("cy", yScale(state.kx)).attr("r", 6).call(dragMx_bottom);
-    bottomPlot.points.append("circle").attr("class", "point").attr("cx", xScale(state.t)).attr("cy", yScale(0)).attr("r", 6).call(dragT_bottom);
+    bottomPlot.points.append("circle").attr("class", "point").attr("cx", xScale(0)).attr("cy", yScale(state.nx)).attr("r", 5).call(dragNx_bottom);
+    bottomPlot.points.append("circle").attr("class", "point").attr("cx", xScale(0)).attr("cy", yScale(state.kx)).attr("r", 5).call(dragKx_bottom);
+    bottomPlot.points.append("circle").attr("class", "point").attr("cx", xScale(state.mx)).attr("cy", yScale(state.kx)).attr("r", 5).call(dragMx_bottom);
+    bottomPlot.points.append("circle").attr("class", "point").attr("cx", xScale(state.t)).attr("cy", yScale(0)).attr("r", 5).call(dragT_bottom);
 
 
     // === Right Calculations ===
@@ -691,13 +691,13 @@ function update() {
 
     let cx = xScaleRight(cur_diff);
     rightPlot1.data.append("line").attr("class", "guide-current-t").attr("x1", cx).attr("y1", yScaleRightProb(1.111)).attr("x2", cx).attr("y2", yScaleRightProb(0));
-    rightPlot1.points.append("circle").attr("cx", cx).attr("cy", yScaleRightProb(cur_prob)).attr("r", 5).style("fill", c.orange).style("stroke", c.base).style("stroke-width", "1.5px");
+    rightPlot1.points.append("circle").attr("cx", cx).attr("cy", yScaleRightProb(cur_prob)).attr("r", 4).style("fill", c.orange).style("stroke", c.base).style("stroke-width", "1.5px");
 
     rightPlot2.data.append("line").attr("class", "guide-current-t").attr("x1", cx).attr("y1", yScaleRightDiff2(CONFIG.domainMax / 3)).attr("x2", cx).attr("y2", yScaleRightDiff2(-CONFIG.domainMax / 3));
-    rightPlot2.points.append("circle").attr("cx", cx).attr("cy", yScaleRightDiff2(val2_curr)).attr("r", 5).style("fill", c.green).style("stroke", c.base).style("stroke-width", "1.5px");
+    rightPlot2.points.append("circle").attr("cx", cx).attr("cy", yScaleRightDiff2(val2_curr)).attr("r", 4).style("fill", c.green).style("stroke", c.base).style("stroke-width", "1.5px");
 
     rightPlot3.data.append("line").attr("class", "guide-current-t").attr("x1", cx).attr("y1", yScaleRightDiff3(CONFIG.domainMax / 2)).attr("x2", cx).attr("y2", yScaleRightDiff3(0));
-    rightPlot3.points.append("circle").attr("cx", cx).attr("cy", yScaleRightDiff3(val3_curr)).attr("r", 5).style("fill", c.blue).style("stroke", c.base).style("stroke-width", "1.5px");
+    rightPlot3.points.append("circle").attr("cx", cx).attr("cy", yScaleRightDiff3(val3_curr)).attr("r", 4).style("fill", c.blue).style("stroke", c.base).style("stroke-width", "1.5px");
 
     // Right Labels
     addMathLabel(rightPlot1.labels, "prob_drop", -15, -18, c.orange, "start");

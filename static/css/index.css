@@ -32,7 +32,7 @@ body {
   font-family: 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
   color: var(--text-primary);
   line-height: 1.6;
-  font-size: 16px;
+  font-size: 14px;
   background-color: var(--background-primary);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -771,8 +771,8 @@ a:focus {
     --stroke-thin: 1.5px;
     --stroke-normal: 2px;
     --stroke-thick: 2.5px;
-    --stroke-profile: 3px;
-    --stroke-profile-obs: 3.5px;
+    --stroke-profile: 2.5px;
+    --stroke-profile-obs: 2.5px;
     --guide-dark: #000;
     --guide-main: #666;
     --guide-muted: #999;
