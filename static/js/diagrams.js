@@ -5,22 +5,22 @@ const CONFIG = {
     // Layout & Dimensions
     layout: {
         left: {
-            margin: {top: 40, right: 30, left: 180},
-            widthTotal: 570,
-            chartHeight: 330,
-            probClipHeight: 140,
-            offsetTopPlotY: 225, // Bottom padding for top plot
-            offsetBotPlotY: 180  // Bottom padding for bottom plot
+            margin: {top: 28, right: 20, left: 125},
+            widthTotal: 400,    // Was 570
+            chartHeight: 230,   // Was 330
+            probClipHeight: 100, // Was 140
+            offsetTopPlotY: 155, // Was 225
+            offsetBotPlotY: 125  // Was 180
         },
         right: {
-            margin: {top: 65, right: 30, left: 60, bottom: 45},
-            widthTotal: 450,
-            chartHeightBase: 365
+            margin: {top: 45, right: 20, left: 40, bottom: 30},
+            widthTotal: 315,    // Was 450
+            chartHeightBase: 255 // Was 365
         },
         box: {
-            width: 170,
-            height: 40,
-            offsetY: 165 // Y-offset from bottom of the top chart
+            width: 120,         // Was 170
+            height: 28,         // Was 40
+            offsetY: 115        // Was 165
         }
     },
 
@@ -399,7 +399,7 @@ function addMathLabel(group, name, x, y, colorHex, align = "middle") {
         const g = group.append("g").attr("class", "mjx-container").node();
         g.appendChild(clone);
 
-        const scale = 0.5;
+        const scale = 0.35;
         const bbox = g.getBBox();
         let dx = align === "middle" ? -bbox.width * scale / 2 : (align === "end" ? -bbox.width * scale : 0);
         let dy = bbox.height * scale / 2;

@@ -6,12 +6,12 @@ class StairCurveVisualizer {
         this.keyProcessor = options.keyProcessor || (k => k);
         this.horizons = options.horizons || [10, 50, 100];
 
-        this.width = 800;
-        this.height = 500;
-        this.progHeight = 250;
-        this.margin = { top: 60, right: 60, bottom: 50, left: 60 };
-        this.progMarginBottom = 40;
-        this.selectionRadius = 6;
+        this.width = 560;       // Was 800
+        this.height = 350;      // Was 500
+        this.progHeight = 180;  // Was 250
+        this.progMarginBottom = 30;
+        this.margin = { top: 40, right: 40, bottom: 35, left: 45 }; // Was 60, 60, 50, 60
+        this.selectionRadius = 5; // Was 6
 
         this.max_runtime = 0;
         this.max_length = 0;
@@ -54,7 +54,7 @@ class StairCurveVisualizer {
             textMuted: getVar('--text-muted', '#666'),
             guide: getVar('--color-guide', '#bbb'),
             grid: getVar('--color-grid', 'rgba(150, 150, 150, 0.6)'),
-            curveInactive: getVar('--curve-inactive', 'rgba(70, 130, 180, 0.1)'),
+            curveInactive: getVar('--curve-inactive', 'rgba(70, 130, 180, 0.3)'),
             curveActive: getVar('--curve-active', '#444444'),
             curveSelected: getVar('--curve-selected', '#ff8c00'),
             shadeLeft: getVar('--shade-left', 'rgba(216, 216, 216, 0.8)'),
@@ -75,18 +75,30 @@ class StairCurveVisualizer {
     }
 
     initDOM() {
-        this.canvas = this.container.querySelector(".plot-canvas");
-        this.canvas.width = this.width;
-        this.canvas.height = this.height;
-        this.ctx = this.canvas.getContext("2d");
+        // 1. Get the screen's pixel density (usually 2 on a Mac)
+        const ratio = window.devicePixelRatio || 1;
 
+        // 2. Setup Main Plot Canvas for High DPI
+        this.canvas = this.container.querySelector(".plot-canvas");
+        this.canvas.width = this.width * ratio;         // Double the internal pixels
+        this.canvas.height = this.height * ratio;
+        this.canvas.style.width = this.width + "px";    // Keep the CSS size the same
+        this.canvas.style.height = this.height + "px";
+        this.ctx = this.canvas.getContext("2d");
+        this.ctx.scale(ratio, ratio);                   // Scale the drawing context
+
+        // 3. Setup SVG Layer (SVGs handle retina automatically)
         this.svg = d3.select(this.container).select(".plot-svg")
             .attr("width", this.width).attr("height", this.height);
 
+        // 4. Setup Progress Canvas for High DPI
         this.progCanvas = this.container.querySelector(".prog-canvas");
-        this.progCanvas.width = this.width;
-        this.progCanvas.height = this.progHeight;
+        this.progCanvas.width = this.width * ratio;
+        this.progCanvas.height = this.progHeight * ratio;
+        this.progCanvas.style.width = this.width + "px";
+        this.progCanvas.style.height = this.progHeight + "px";
         this.progCtx = this.progCanvas.getContext("2d");
+        this.progCtx.scale(ratio, ratio);
 
         this.progSvg = d3.select(this.container).select(".prog-svg")
             .attr("width", this.width).attr("height", this.progHeight);
@@ -144,7 +156,7 @@ class StairCurveVisualizer {
             const g = group.append("g").attr("class", `mjx-container ${name}-label`).node();
             g.appendChild(clone);
 
-            const scale = 0.5;
+            const scale = 0.35;
             const bbox = g.getBBox();
             let dx = align === "middle" ? -bbox.width * scale / 2 : (align === "end" ? -bbox.width * scale : 0);
             let dy = bbox.height * scale / 2;
@@ -190,7 +202,7 @@ class StairCurveVisualizer {
 
             if (outTitle) {
                 outTitle.innerHTML = 'Outputs ';
-                outTitle.appendChild(fixSVG(`x`, '-1px'));
+                outTitle.appendChild(fixSVG(`x`, '0px'));
             }
 
             if (progTitle) {
@@ -294,8 +306,8 @@ class StairCurveVisualizer {
                 .attr("x2", this.margin.left).attr("y2", this.margin.top - 20)
                 .style("stroke", this.theme.axis).style("stroke-width", "2px").style("fill", "none");
 
-            this.svg.append("text").attr("class", "axis-title").attr("x", this.width - this.margin.right + 25).attr("y", this.height - this.margin.bottom - 10).attr("text-anchor", "end").style("font-size", "14px").style("fill", this.theme.textMain).style("font-weight", "bold").text("Runtime");
-            this.svg.append("text").attr("class", "axis-title").attr("x", this.margin.left).attr("y", this.margin.top - 30).attr("text-anchor", "middle").style("font-size", "14px").style("fill", this.theme.textMain).style("font-weight", "bold").text("Complexity");
+            this.svg.append("text").attr("class", "axis-title").attr("x", this.width - this.margin.right + 25).attr("y", this.height - this.margin.bottom - 10).attr("text-anchor", "end").style("font-size", "12px").style("fill", this.theme.textMain).style("font-weight", "bold").text("Runtime");
+            this.svg.append("text").attr("class", "axis-title").attr("x", this.margin.left).attr("y", this.margin.top - 30).attr("text-anchor", "middle").style("font-size", "12px").style("fill", this.theme.textMain).style("font-weight", "bold").text("Complexity");
 
             // --- Bottom Plot Axes ---
             let progXAxis = this.progSvg.append("g").attr("transform", `translate(0,${this.progHeight - this.progMarginBottom})`).call(d3.axisBottom(this.xScaleProg).ticks(10, "~s"));
@@ -315,7 +327,7 @@ class StairCurveVisualizer {
                 .style("stroke", this.theme.axis).style("stroke-width", "2px").style("fill", "none");
 
             this.addMathLabel(this.progSvg, 'delta_T_M', this.width - this.margin.right + 25, this.progHeight - this.progMarginBottom - 20, "end");
-            this.progSvg.append("text").attr("class", "axis-title").attr("x", this.margin.left - 45).attr("y", this.margin.top - 30).attr("text-anchor", "start").style("font-size", "14px").style("fill", this.theme.textMain).style("font-weight", "bold").text("Future compression progress");
+            this.progSvg.append("text").attr("class", "axis-title").attr("x", this.margin.left - 45).attr("y", this.margin.top - 30).attr("text-anchor", "start").style("font-size", "12px").style("fill", this.theme.textMain).style("font-weight", "bold").text("Future compression progress");
 
             // --- Legend ---
             let [h1, h2, h3] = this.horizons;
@@ -325,11 +337,11 @@ class StairCurveVisualizer {
             let legendX2 = this.width - this.margin.right - 100;
             let baseTY = this.margin.top - 30;
             let lineLen = 16;
-            let textOffset = 22;
-            let rowH = 18;
+            let textOffset = 18;
+            let rowH = 15;
 
-            legendGroup.append("text").attr("x", legendX1).attr("y", baseTY).attr("fill", this.theme.textMain).style("font-size", "12px").style("font-weight", "bold").text("Global");
-            legendGroup.append("text").attr("x", legendX2).attr("y", baseTY).attr("fill", this.theme.textMain).style("font-size", "12px").style("font-weight", "bold").text("Selected");
+            legendGroup.append("text").attr("x", legendX1).attr("y", baseTY).attr("fill", this.theme.textMain).style("font-size", "11px").style("font-weight", "bold").text("Global");
+            legendGroup.append("text").attr("x", legendX2).attr("y", baseTY).attr("fill", this.theme.textMain).style("font-size", "11px").style("font-weight", "bold").text("Selected");
 
             let legendItems = [
                 { label: "indefinite",        gColor: this.theme.horizonInf, gWidth: 2.5, sColor: this.theme.dynHorizonInf, sWidth: 2.5 },
