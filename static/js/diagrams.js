@@ -6,21 +6,21 @@ const CONFIG = {
     layout: {
         left: {
             margin: {top: 28, right: 20, left: 125},
-            widthTotal: 400,    // Was 570
-            chartHeight: 230,   // Was 330
-            probClipHeight: 100, // Was 140
-            offsetTopPlotY: 155, // Was 225
-            offsetBotPlotY: 125  // Was 180
+            widthTotal: 400,
+            chartHeight: 230,
+            probClipHeight: 100,
+            offsetTopPlotY: 140, // Increased to make room for labels and the box
+            offsetBotPlotY: 120
         },
         right: {
-            margin: {top: 45, right: 20, left: 40, bottom: 30},
-            widthTotal: 315,    // Was 450
-            chartHeightBase: 255 // Was 365
+            margin: {top: 55, right: 20, left: 40, bottom: 30},
+            widthTotal: 315,
+            chartHeightBase: 245 // Reduced to balance the overall height with the left column
         },
         box: {
-            width: 120,         // Was 170
-            height: 28,         // Was 40
-            offsetY: 115        // Was 165
+            width: 150,
+            height: 30,
+            offsetY: 75         // Pushed down to clear the bottom-hanging math labels
         }
     },
 
@@ -444,10 +444,10 @@ function initStaticLabels() {
 
     addMathLabel(rightPlot2.axes, "delta_t", xScaleRight(CONFIG.domainMax / 8) + 5, yScaleRightDiff2(CONFIG.domainMax / 8) + 12, CONFIG.colors.gray, "start");
 
-    // Titles
-    rightPlot1.axes.append("text").attr("class", "plot-title").attr("x", -layoutR.margin.left).attr("y", -layoutR.margin.top + 20).attr("text-anchor", "start").text("Probability of future drop");
-    rightPlot2.axes.append("text").attr("class", "plot-title").attr("x", -layoutR.margin.left).attr("y", -layoutR.margin.top + 20).attr("text-anchor", "start").text("Expected relative position of last drop");
-    rightPlot3.axes.append("text").attr("class", "plot-title").attr("x", -layoutR.margin.left).attr("y", -layoutR.margin.top + 20).attr("text-anchor", "start").text("Expected future compression progress");
+    // Titles - Elevated slightly relative to margin to avoid legend overlap
+    rightPlot1.axes.append("text").attr("class", "plot-title").attr("x", -layoutR.margin.left).attr("y", -layoutR.margin.top + 15).attr("text-anchor", "start").text("Probability of future drop");
+    rightPlot2.axes.append("text").attr("class", "plot-title").attr("x", -layoutR.margin.left).attr("y", -layoutR.margin.top + 15).attr("text-anchor", "start").text("Expected relative position of last drop");
+    rightPlot3.axes.append("text").attr("class", "plot-title").attr("x", -layoutR.margin.left).attr("y", -layoutR.margin.top + 15).attr("text-anchor", "start").text("Expected future compression progress");
 
     topPlot.axes.append("text").attr("class", "axis-title").attr("x", widthLeft).attr("y", layoutL.chartHeight - 11).attr("text-anchor", "end").text("Complexity");
     topPlot.axes.append("text").attr("class", "axis-title").attr("x", 0).attr("y", -15).attr("text-anchor", "middle").text("Log-Size");
@@ -459,20 +459,22 @@ function initStaticLabels() {
     addMathLabel(rightPlot2.axes, "delta_t", widthRight, yScaleRightDiff2(0) - 20, CONFIG.colors.dark, "end");
 
     // Transform EQ Box
+    const box_offset = -20
     const bx = CONFIG.layout.box;
-    const boxX = -0.5 * bx.width;
-    const boxY = layoutL.chartHeight + bx.offsetY;
+    const boxX = -0.5 * bx.width + box_offset;
+    const boxY = layoutL.chartHeight + bx.offsetY + 3;
 
-    topPlot.axes.append("line").attr("x1", 0).attr("y1", boxY - 20).attr("x2", 0).attr("y2", boxY - 4)
+    // Adjusted arrow lengths/positioning for proper spacing around the box
+    topPlot.axes.append("line").attr("x1", box_offset).attr("y1", boxY - 20).attr("x2", box_offset).attr("y2", boxY - 4)
         .attr("stroke", CONFIG.colors.grayNeutral).attr("stroke-width", 2).attr("marker-end", "url(#arrow-gray)");
 
     topPlot.axes.append("rect").attr("x", boxX).attr("y", boxY).attr("width", bx.width).attr("height", bx.height)
         .attr("rx", 8).attr("fill", CONFIG.colors.boxFill).attr("stroke", CONFIG.colors.grayNeutral).attr("stroke-width", 1.5);
 
-    topPlot.axes.append("line").attr("x1", 0).attr("y1", boxY + bx.height).attr("x2", 0).attr("y2", boxY + bx.height + 16)
+    topPlot.axes.append("line").attr("x1", box_offset).attr("y1", boxY + bx.height + 0).attr("x2", box_offset).attr("y2", boxY + bx.height + 16)
         .attr("stroke", CONFIG.colors.grayNeutral).attr("stroke-width", 2).attr("marker-end", "url(#arrow-gray)");
 
-    addMathLabel(topPlot.axes, "transform_eq", boxX + bx.width/2, boxY + bx.height/2, CONFIG.colors.dark, "middle");
+    addMathLabel(topPlot.axes, "transform_eq", boxX + bx.width/2, boxY + bx.height/2 + 2, CONFIG.colors.dark, "middle");
 }
 
 /**
@@ -699,12 +701,12 @@ function update() {
     rightPlot3.data.append("line").attr("class", "guide-current-t").attr("x1", cx).attr("y1", yScaleRightDiff3(CONFIG.domainMax / 2)).attr("x2", cx).attr("y2", yScaleRightDiff3(0));
     rightPlot3.points.append("circle").attr("cx", cx).attr("cy", yScaleRightDiff3(val3_curr)).attr("r", 4).style("fill", c.blue).style("stroke", c.base).style("stroke-width", "1.5px");
 
-    // Right Labels
-    addMathLabel(rightPlot1.labels, "prob_drop", -15, -18, c.orange, "start");
-    addMathLabel(rightPlot2.labels, "Em_diff", -15, -18, c.green, "start");
-    addMathLabel(rightPlot3.labels, "Ek_diff", -15, -18, c.blue, "start");
+    // Right Labels with corrected Y alignment bounds
+    let legX = widthRight, startY = -20, endX = legX - 60, startX = endX - 20;
 
-    let legX = widthRight, startY = -18, endX = legX - 60, startX = endX - 20;
+    addMathLabel(rightPlot1.labels, "prob_drop", -15, startY, c.orange, "start");
+    addMathLabel(rightPlot2.labels, "Em_diff", -15, startY, c.green, "start");
+    addMathLabel(rightPlot3.labels, "Ek_diff", -15, startY, c.blue, "start");
 
     addMathLabel(rightPlot1.labels, "prob_drop_horizon_title", legX, startY, c.gray, "end");
     addMathLabel(rightPlot1.labels, "delta_c_1", legX, startY + 22, c.gray, "end");
@@ -715,15 +717,15 @@ function update() {
     rightPlot1.labels.append("line").attr("x1", startX).attr("y1", startY + 42).attr("x2", endX).attr("y2", startY + 42).style("stroke", c.orange).style("stroke-width", "2.5px").style("opacity", opa[1]);
     rightPlot1.labels.append("line").attr("x1", startX).attr("y1", startY + 62).attr("x2", endX).attr("y2", startY + 62).style("stroke", c.orange).style("stroke-width", "2.5px").style("opacity", opa[2]);
 
-    addMathLabel(rightPlot3.labels, "exp_prog_horizon_title", legX, startY, c.gray, "end");
-    addMathLabel(rightPlot3.labels, "exp_prog_horizon_subtitle", legX, startY + 20, c.gray, "end");
-    addMathLabel(rightPlot3.labels, "delta_c_1", legX, startY + 45, c.gray, "end");
-    addMathLabel(rightPlot3.labels, "delta_c_2", legX, startY + 65, c.gray, "end");
-    addMathLabel(rightPlot3.labels, "delta_c_4", legX, startY + 85, c.gray, "end");
+    addMathLabel(rightPlot3.labels, "exp_prog_horizon_title", legX, startY - 10, c.gray, "end");
+    addMathLabel(rightPlot3.labels, "exp_prog_horizon_subtitle", legX, startY + 8, c.gray, "end");
+    addMathLabel(rightPlot3.labels, "delta_c_1", legX, startY + 30, c.gray, "end");
+    addMathLabel(rightPlot3.labels, "delta_c_2", legX, startY + 50, c.gray, "end");
+    addMathLabel(rightPlot3.labels, "delta_c_4", legX, startY + 70, c.gray, "end");
 
-    rightPlot3.labels.append("line").attr("x1", startX).attr("y1", startY + 45).attr("x2", endX).attr("y2", startY + 45).style("stroke", c.blue).style("stroke-width", "2.5px").style("opacity", opa[0]);
-    rightPlot3.labels.append("line").attr("x1", startX).attr("y1", startY + 65).attr("x2", endX).attr("y2", startY + 65).style("stroke", c.blue).style("stroke-width", "2.5px").style("opacity", opa[1]);
-    rightPlot3.labels.append("line").attr("x1", startX).attr("y1", startY + 85).attr("x2", endX).attr("y2", startY + 85).style("stroke", c.blue).style("stroke-width", "2.5px").style("opacity", opa[2]);
+    rightPlot3.labels.append("line").attr("x1", startX).attr("y1", startY + 30).attr("x2", endX).attr("y2", startY + 30).style("stroke", c.blue).style("stroke-width", "2.5px").style("opacity", opa[0]);
+    rightPlot3.labels.append("line").attr("x1", startX).attr("y1", startY + 50).attr("x2", endX).attr("y2", startY + 50).style("stroke", c.blue).style("stroke-width", "2.5px").style("opacity", opa[1]);
+    rightPlot3.labels.append("line").attr("x1", startX).attr("y1", startY + 70).attr("x2", endX).attr("y2", startY + 70).style("stroke", c.blue).style("stroke-width", "2.5px").style("opacity", opa[2]);
 }
 
 /**
