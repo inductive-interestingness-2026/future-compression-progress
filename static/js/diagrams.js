@@ -459,19 +459,18 @@ function initStaticLabels() {
     addMathLabel(rightPlot2.axes, "delta_t", widthRight, yScaleRightDiff2(0) - 20, CONFIG.colors.dark, "end");
 
     // Transform EQ Box
-    const box_offset = -20
     const bx = CONFIG.layout.box;
-    const boxX = -0.5 * bx.width + box_offset;
-    const boxY = layoutL.chartHeight + bx.offsetY + 3;
+    const boxX = -0.5 * bx.width;
+    const boxY = layoutL.chartHeight + bx.offsetY;
 
     // Adjusted arrow lengths/positioning for proper spacing around the box
-    topPlot.axes.append("line").attr("x1", box_offset).attr("y1", boxY - 20).attr("x2", box_offset).attr("y2", boxY - 4)
+    topPlot.axes.append("line").attr("x1", 0).attr("y1", boxY - 20).attr("x2", 0).attr("y2", boxY - 4)
         .attr("stroke", CONFIG.colors.grayNeutral).attr("stroke-width", 2).attr("marker-end", "url(#arrow-gray)");
 
     topPlot.axes.append("rect").attr("x", boxX).attr("y", boxY).attr("width", bx.width).attr("height", bx.height)
         .attr("rx", 8).attr("fill", CONFIG.colors.boxFill).attr("stroke", CONFIG.colors.grayNeutral).attr("stroke-width", 1.5);
 
-    topPlot.axes.append("line").attr("x1", box_offset).attr("y1", boxY + bx.height + 0).attr("x2", box_offset).attr("y2", boxY + bx.height + 16)
+    topPlot.axes.append("line").attr("x1", 0).attr("y1", boxY + bx.height + 4).attr("x2", 0).attr("y2", boxY + bx.height + 20)
         .attr("stroke", CONFIG.colors.grayNeutral).attr("stroke-width", 2).attr("marker-end", "url(#arrow-gray)");
 
     addMathLabel(topPlot.axes, "transform_eq", boxX + bx.width/2, boxY + bx.height/2 + 2, CONFIG.colors.dark, "middle");
