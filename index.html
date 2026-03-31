@@ -228,9 +228,14 @@
 <section class="section">
     <div class="container is-max-desktop empirical-wrapper" id="theory">
       <h2 class="title">Theoretical Profiles, Probabilities, and Expectations</h2>
-        Drag the red handles to adjust the shape of the observed profile $\hat{P}$, and see how it affects the expected continuation of the profile.
+        Propositions 4.1, 4.2, and 4.3 in the paper describe how <i>past compression progress</i> affects <i>expected future compression progress</i>.
+        Here, we provide additional explanations and interactive visualizations, that hopefully make these results more intuitive and immediate.
+        We have an observed profile $\hat{P}$, up to complexity $t$. For complexities higher than $t$, the profile could continue in various ways:
+        It could continue without any further drop, it could have a further drop, immediately or at a high complexity, or it could have many more drops. We are interested in the question of how our observation $\hat{P}$ influences our expectation of the continuation.
+        <br><br>
         To be precise, the expectation is over all strings $x$, sampled from a prior, that are consistent with the observed profile $\hat{P}$.
         We call this expected profile continuation $P_x$, with characteristic values $m_x$ (complexity position of the last drop) and $k_x$ (complexity of $x$).
+        Drag the red handles to adjust the shape of the observed profile $\hat{P}$, choose a prior, and see how it affects the expected continuation of the profile.
 
       <div style="display: flex; flex-direction: column; align-items: center; margin-top: 20px; width: 100%; overflow-x: auto;">
         <div class="viz-container">
