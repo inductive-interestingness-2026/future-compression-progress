@@ -211,7 +211,7 @@
             <div class="is-size-5 publication-authors">
               <!-- TODO: Replace with your paper authors and their personal links -->
               <span class="author-block">
-                <a href="" target="_blank">Anonymous Authors</a><sup>*</sup></span>
+                <a href="" target="_blank">Anonymous Authors</a></span>
                 <span class="author-block">
                   </div>
 
@@ -254,9 +254,41 @@
 <section class="section">
   <div class="container is-max-desktop empirical-wrapper" id="experiments">
     <h2 class="title">Empirical Results</h2>
+      Our theoretical results hold for the busy beaver regime, which involves runtimes that are not physically realizable.
+      While they provide insight into the fundamental algorithmic properties of objects and their time-bounded compressibility, it is not immediately obvious how relevant these results are to real-world scenarios.
+      To address this, we conduct empirical experiments that mirror our theoretical results.
+      We choose three fundamentally different, yet still universal and practical, computational paradigms that represent a wide variety of possible universal computers:
+      2-Tag systems, elementary cellular automata with Rule 110, and the Brainfuck (BF) language.
+
+      In each of these systems, we run all programs up to a certain length with generous runtime limits.
+      This allows us to construct real-world runtime vs. complexity profiles for all objects (i.e., output strings) computed by multiple different programs.
+      From these profiles, we can compute the relationship between steps since the last observed progress and either the empirically achieved further compression progress or the relative time of the last further compression progress.
+      Using importance sampling, we can estimate the expected future compression progress under the different priors.
+      These are the empirical equivalents of the theoretical expectations shown above.
+
+      We observe that in all three computational paradigms, the fundamental trends clearly hold:
+      Recent compression progress implies further compression progress in the future, especially under the assumption of the Algorithmic Prior.
+      The most significant difference from the theoretical results is with respect to the Speed Prior:
+      in the heavily constrained empirical setting, the logarithmic bias against long runtimes is less pronounced.
+      This is especially the case for Rule 110 cellular automata, for which—due to their construction—no programs with very short runtimes exist.
+      The exact experimental setups for the three systems are detailed below.
+
+      <br><br>
+
+      <h3 class="title is-4">Tag Machines</h3>
+
+        In this system, we run 2-tag systems with the alphabet $\{a, b, c, H\}$, where $H$ is the halting symbol.
+        These kinds of systems have been shown to be Turing complete.
+        We enumerate all possible production rules up to a combined length of 13, with $H$ appearing only at the end of a single rule.
+        The starting word is always '$aaa$'.
+        This leads to approximately 120 million programs which we run for up to 100k steps.
+        If no output is produced within this limit, we consider the program non-halting.
+
+      <br><br>
+
 
     <div id="tag-vis" class="vis-module">
-        <h3 class="title is-4">1. Tag Machines</h3>
+
         <div class="emp-container">
             <div class="emp-charts">
                 <div class="chart-wrapper chart-container"><canvas class="plot-canvas"></canvas><svg class="plot-svg"></svg></div>
@@ -294,8 +326,20 @@
 
     <hr class="emp-divider">
 
+    <h3 class="title is-4">Rule 110 Cellular Automata</h3>
+
+    Rule 110 is a Turing-complete elementary cellular automaton.
+    We use a state of size 512 with a cyclic boundary condition (we do this purely for practical reasons and are aware that this technically reduces the automaton to a finite state machine).
+    The programs are defined as the leftmost bits of the tape, up to the last value of 1.
+    We enumerate all programs up to length 25, resulting in approximately 34 million simulations.
+    A program halts as soon as any particular state appears for a second time; this state is then the output of the program.
+    If no state repeats within 100k steps, we consider the program non-halting.
+
+    <br><br>
+
     <div id="rule110-vis" class="vis-module">
-        <h3 class="title is-4">2. Rule 110 Cellular Automata</h3>
+
+
         <div class="emp-container">
             <div class="emp-charts">
                 <div class="chart-wrapper chart-container"><canvas class="plot-canvas"></canvas><svg class="plot-svg"></svg></div>
@@ -335,8 +379,16 @@
 
     <hr class="emp-divider">
 
+    <h3 class="title is-4">3. Brainfuck</h3>
+
+    <a href="https://en.wikipedia.org/wiki/Brainfuck">BF</a> is a highly compact Turing-complete programming language.
+    Since we are not providing any external inputs, we do not use the <i>read</i> instruction '<code>,</code>'.
+    We enumerate all programs up to length 11 consisting of the remaining 7 instructions, leading to approximately 2.3 billion different programs, which we run for up to 100k steps.
+
+    <br><br>
+
     <div id="bf-vis" class="vis-module">
-        <h3 class="title is-4">3. Brainfuck</h3>
+
         <div class="emp-container">
             <div class="emp-charts">
                 <div class="chart-wrapper chart-container"><canvas class="plot-canvas"></canvas><svg class="plot-svg"></svg></div>
@@ -379,26 +431,6 @@
 
 
 
-<!--BibTex citation -->
-  <section class="section" id="BibTeX">
-    <div class="container is-max-desktop content">
-      <div class="bibtex-header">
-        <h2 class="title">BibTeX</h2>
-        <button class="copy-bibtex-btn" onclick="copyBibTeX()" title="Copy BibTeX to clipboard">
-          <i class="fas fa-copy"></i>
-          <span class="copy-text">Copy</span>
-        </button>
-      </div>
-      <pre id="bibtex-code"><code>@article{YourPaperKey2024,
-  title={Your Paper Title Here},
-  author={First Author and Second Author and Third Author},
-  journal={Conference/Journal Name},
-  year={2024},
-  url={https://your-domain.com/your-project-page}
-}</code></pre>
-    </div>
-</section>
-<!--End BibTex citation -->
 
 
   <footer class="footer">
