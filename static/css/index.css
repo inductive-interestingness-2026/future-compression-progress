@@ -949,4 +949,14 @@ a:focus {
 .empirical-wrapper .point:hover { fill: var(--color-point-hover); }
 .guide-line-dash { stroke: var(--color-guide); stroke-width: 1.5px; stroke-dasharray: 4, 4; fill: none; }
 
+.blue-label {
+    color: var(--theme-blue-main);
+}
+.green-label {
+    color: var(--theme-green-main);
+}
+.orange-label {
+    color: var(--theme-orange-main);
+}
+
 

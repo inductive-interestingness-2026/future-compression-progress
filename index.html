@@ -228,15 +228,38 @@
 <section class="section">
     <div class="container is-max-desktop empirical-wrapper" id="theory">
       <h2 class="title">Theoretical Profiles, Probabilities, and Expectations</h2>
-        Propositions 4.1, 4.2, and 4.3 in the paper describe how <i>past compression progress</i> affects <i>expected future compression progress</i>.
-        Here, we provide additional explanations and interactive visualizations, that hopefully make these results more intuitive and immediate.
-        We have an observed profile $\hat{P}$, up to complexity $t$. For complexities higher than $t$, the profile could continue in various ways:
-        It could continue without any further drop, it could have a further drop, immediately or at a high complexity, or it could have many more drops. We are interested in the question of how our observation $\hat{P}$ influences our expectation of the continuation.
-        <br><br>
-        To be precise, the expectation is over all strings $x$, sampled from a prior, that are consistent with the observed profile $\hat{P}$.
-        We call this expected profile continuation $P_x$, with characteristic values $m_x$ (complexity position of the last drop) and $k_x$ (complexity of $x$).
-        Drag the red handles to adjust the shape of the observed profile $\hat{P}$, choose a prior, and see how it affects the expected continuation of the profile.
+        <div class="content">
+        <p>Propositions 4.1, 4.2, and 4.3 in the paper describe how observed past compression progress affects expected future compression progress. We have created interactive visualizations to make these theoretical results more intuitive.</p>
 
+        <h3>The Setup: The Observed Profile</h3>
+        <p>Suppose we have an observed partial log-size vs. complexity profile $\hat{P}$, up to a complexity limit $t$. Beyond $t$, the profile could continue in several ways: it might plateau with no further drops, it could drop immediately, or it might experience multiple future drops at much higher complexities. We want to know how the shape of our observation $\hat{P}$ influences our expectation of this continuation.</p>
+
+        <h3>Interactive Elements &amp; Layout</h3>
+        <ul>
+            <li><strong>Log-Size vs. Complexity (Top Left):</strong> The observed partial profile $\hat{P}$ is characterized by three adjustable values: the minimum size at complexity 0 ($\hat{n}$), the complexity of the last observed drop ($\hat{m}$), and the current estimated complexity ($\hat{k}$). You can drag the red handles to freely adjust these values alongside the observation boundary $t$. The exact shape between 0 and $\hat{m}$ is irrelevant for our purposes; we only care about how $\hat{P}$'s macro-shape influences the expected continuation.</li>
+            <li><strong>Complexity vs. Runtime (Bottom Left):</strong> Using the abstract time-scale transformation $(i, j) \mapsto (\text{BB}(i), i + j)$, the upper $\hat{P}$ and $P_x$ profiles map directly to equivalent complexity vs. runtime profiles ($\hat{D}$ and $D_x$).</li>
+            <li><strong>The Prior (Top Right):</strong> We assume a distribution over all computable strings, selectable via a dropdown: the Length Prior $L$, Algorithmic Prior $M$, or Speed Prior $S$. $P_x$ is the full profile of a specific string $x$ sampled from this prior. Given our observation $\hat{P}$, what is the expected complexity of its last plot ($m_x$) and its minimum complexity at log-size 0 ($k_x$)?</li>
+            <li><strong>Probability of a Future Drop (<span class="orange-label">Top Right</span>):</strong> The first key question is whether another drop occurs after $t$ (the condition $m_x \geq t$). This probability $\color{#e67e22} p(m_x \geq t \mid \hat{P})$ is plotted as a function of $t - \hat{m}$. For priors $L$ and $M$, this probability decays exponentially. The chart also visualizes the probability of <em>any</em> drop within a given distance $\Delta c$ after $t$.</li>
+            <li><strong>Expected Relative Position (<span class="green-label">Middle Right</span>):</strong> Without conditioning on a future drop, this chart shows how many steps after $\hat{m}$ the expected last drop occurs ($\color{#228b22} \mathbb{E}[m_x \mid \hat{P}] - \hat{m}$). The expected last drop is to the right of $t$ only if this value exceeds the $t - \hat{m}$ boundary (the gray dashed line).</li>
+            <li><strong>Expected Future Compression Progress (<span class="blue-label">Bottom Right</span>):</strong> This chart displays the expected total future compression progress, calculated as $\color{#4682b4} \hat{k} - \mathbb{E}[k_x \mid \hat{P}]$. It additionally shows the expected compression progress specifically within $\Delta c$ steps after $t$.</li>
+        </ul>
+
+        <h3>Conditioned Expectations (The Shaded Regions)</h3>
+        <p>If we assume there <em>will</em> be a further drop after $t$ (i.e., conditioning on $m_x \geq t$), the left-hand plots visualize the expected continuation:</p>
+        <ul>
+            <li>The <strong><span class="green-label">shaded green area</span></strong> shows the probability distribution $p(m_x \mid \hat{P}, m_x \geq t)$ for specific drop values $m_x$. The dashed green line marks the expected value $\mathbb{E}[m_x \mid \hat{P}, m_x \geq t]$.</li>
+            <li>The <strong><span class="blue-label">shaded blue area</span></strong> shows the distribution $p(k_x \mid \hat{P}, m_x \geq t)$ and the expected ultimate complexity $\mathbb{E}[k_x \mid \hat{P}, m_x \geq t]$.</li>
+        </ul>
+
+        <h3>How the Priors Affect Expectations</h3>
+        <ul>
+            <li><strong>Length Prior ($L$):</strong> Both $p_L(m_x \mid \hat{P}, m_x \geq t)$ and $p_L(k_x \mid \hat{P}, m_x \geq t)$ decay quickly as the distance from $t$ and $\hat{k}$ increases. The overall probability of a future drop $p_L(m_x \geq t \mid \hat{P})$ immediately decays exponentially as a function of $t - \hat{m}$.</li>
+            <li><strong>Algorithmic Prior ($M$):</strong> The drop position distribution $p_M(m_x \mid \hat{P}, m_x \geq t)$ behaves similarly to the Length Prior. However, the ultimate complexity distribution $p_M(k_x \mid \hat{P}, m_x \geq t)$ is much more uniform across the interval $[t, \hat{k}]$, leading to a larger expected drop. The future drop probability still decays exponentially, but slower than under $L$.</li>
+            <li><strong>Speed Prior ($S$):</strong> Because it heavily penalizes runtime, conditioning on $m_x \geq t$ leads to an immediate expected drop in the limit of the large runtimes considered here. However, the unconditioned probability $p_S(m_x \geq t \mid \hat{P})$ is essentially zero.</li>
+        </ul>
+
+        <p><strong>Interact with the visualization:</strong> Drag the red handles to adjust the shape of the observed profiles ($\hat{P}$ or $\hat{D}$), select a prior from the dropdown, and observe how these variables alter the expected continuation.</p>
+      </div>
       <div style="display: flex; flex-direction: column; align-items: center; margin-top: 20px; width: 100%; overflow-x: auto;">
         <div class="viz-container">
           <div class="viz-col" id="col-left"></div>
