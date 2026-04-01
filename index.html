@@ -247,8 +247,8 @@
         <h3>Conditioned Expectations (The Shaded Regions)</h3>
         <p>If we assume there <em>will</em> be a further drop after $t$ (i.e., conditioning on $m_x \geq t$), the left-hand plots visualize the expected continuation:</p>
         <ul>
-            <li>The <strong><span class="green-label">shaded green area</span></strong> shows the probability distribution $p(m_x \mid \hat{P}, m_x \geq t)$ for specific drop values $m_x$. The dashed green line marks the expected value $\mathbb{E}[m_x \mid \hat{P}, m_x \geq t]$.</li>
-            <li>The <strong><span class="blue-label">shaded blue area</span></strong> shows the distribution $p(k_x \mid \hat{P}, m_x \geq t)$ and the expected ultimate complexity $\mathbb{E}[k_x \mid \hat{P}, m_x \geq t]$.</li>
+            <li>The <strong><span class="green-label">shaded green area</span></strong> shows the probability distribution $p(m_x \mid \hat{P}, m_x \geq t)$ for specific drop values $m_x$. The dashed green line labeled $m_x$ marks the expected value $\mathbb{E}[m_x \mid \hat{P}, m_x \geq t]$.</li>
+            <li>The <strong><span class="blue-label">shaded blue area</span></strong> shows the distribution $p(k_x \mid \hat{P}, m_x \geq t)$ and the expected ultimate complexity $\mathbb{E}[k_x \mid \hat{P}, m_x \geq t]$ (dashed line labeled $k_x$).</li>
         </ul>
 
         <h3>How the Priors Affect Expectations</h3>
@@ -286,16 +286,16 @@
       While they provide insight into the fundamental algorithmic properties of objects and their time-bounded compressibility, it is not immediately obvious how relevant these results are to real-world scenarios.
       To address this, we conduct empirical experiments that mirror our theoretical results.
       We choose three fundamentally different, yet still universal and practical, computational paradigms that represent a wide variety of possible universal computers:
-      2-Tag systems, elementary cellular automata with Rule 110, and the Brainfuck (BF) language.
+      <a href="https://en.wikipedia.org/wiki/Tag_system">2-Tag Systems</a>, elementary cellular automata with <a href="https://en.wikipedia.org/wiki/Rule_110">Rule 110</a>, and the <a href="https://en.wikipedia.org/wiki/Brainfuck">Brainfuck</a> (BF) language.
 
       In each of these systems, we run all programs up to a certain length with generous runtime limits.
-      This allows us to construct real-world runtime vs. complexity profiles for all objects (i.e., output strings) computed by multiple different programs.
-      From these profiles, we can compute the relationship between steps since the last observed progress and either the empirically achieved further compression progress or the relative time of the last further compression progress.
+      This allows us to construct real-world complexity vs. runtime profiles for all objects (i.e., output strings $x$) computed by multiple different programs.
+      From these profiles, we can compute the relationship between steps since the last observed progress and the empirically achieved further compression progress.
       Using importance sampling, we can estimate the expected future compression progress under the different priors.
       These are the empirical equivalents of the theoretical expectations shown above.
 
       We observe that in all three computational paradigms, the fundamental trends clearly hold:
-      Recent compression progress implies further compression progress in the future, especially under the assumption of the Algorithmic Prior.
+      Recent compression progress implies further compression progress in the future, especially under the assumption of the Algorithmic Prior $M$.
       The most significant difference from the theoretical results is with respect to the Speed Prior:
       in the heavily constrained empirical setting, the logarithmic bias against long runtimes is less pronounced.
       This is especially the case for Rule 110 cellular automata, for which—due to their construction—no programs with very short runtimes exist.
