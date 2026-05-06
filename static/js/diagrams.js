@@ -764,3 +764,189 @@ window.addEventListener('load', () => {
          update();
      }, 500);
 });
+
+/**
+ * ==========================================
+ * 10. SVG EXPORT & CONTEXT MENU
+ * ==========================================
+ */
+function setupSvgDownloadMenu() {
+    // 1. Create the custom context menu
+    const contextMenu = document.createElement('div');
+    contextMenu.id = 'svg-download-menu';
+    contextMenu.innerHTML = 'Download as .svg';
+
+    // Style the menu so it looks clean and native
+    Object.assign(contextMenu.style, {
+        position: 'absolute',
+        display: 'none',
+        backgroundColor: '#ffffff',
+        border: '1px solid #cccccc',
+        boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
+        padding: '8px 16px',
+        cursor: 'pointer',
+        borderRadius: '6px',
+        fontFamily: 'Inter, sans-serif',
+        fontSize: '14px',
+        color: '#333333',
+        zIndex: '9999'
+    });
+
+    contextMenu.addEventListener('mouseover', () => contextMenu.style.backgroundColor = '#f0f0f0');
+    contextMenu.addEventListener('mouseout', () => contextMenu.style.backgroundColor = '#ffffff');
+
+    document.body.appendChild(contextMenu);
+
+    let currentTargetSvg = null;
+
+    // 2. Listen for right-clicks on the diagram columns
+    document.querySelectorAll('#col-left, #col-right').forEach(col => {
+        col.addEventListener('contextmenu', (e) => {
+            const svg = e.target.closest('svg');
+            if (!svg) return;
+
+            e.preventDefault();
+            currentTargetSvg = svg;
+
+            contextMenu.style.display = 'block';
+            contextMenu.style.left = `${e.pageX}px`;
+            contextMenu.style.top = `${e.pageY}px`;
+        });
+    });
+
+    document.addEventListener('click', (e) => {
+        if (e.target !== contextMenu) {
+            contextMenu.style.display = 'none';
+        }
+    });
+
+    // 4. Handle the download action
+    contextMenu.addEventListener('click', () => {
+        if (!currentTargetSvg) return;
+
+        const clonedSvg = currentTargetSvg.cloneNode(true);
+
+        clonedSvg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+        if (!clonedSvg.hasAttribute('viewBox')) {
+            clonedSvg.setAttribute('viewBox', `0 0 ${clonedSvg.getAttribute('width')} ${clonedSvg.getAttribute('height')}`);
+        }
+
+        // --- Gather all hidden definitions from the page ---
+        let svgDefs = clonedSvg.querySelector('defs');
+        if (!svgDefs) {
+            svgDefs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+            clonedSvg.prepend(svgDefs);
+        }
+
+        document.querySelectorAll('defs').forEach(externalDefs => {
+            if (!clonedSvg.contains(externalDefs)) {
+                Array.from(externalDefs.children).forEach(child => {
+                    svgDefs.appendChild(child.cloneNode(true));
+                });
+            }
+        });
+
+        // --- Clean up interactive points for export ---
+        const points = clonedSvg.querySelectorAll('.point');
+        // The left plots always generate exactly 4 drag points.
+        // If we find 4, we know we are operating on a left plot.
+        if (points.length === 4) {
+            // Indices: 0(nx), 1(kx), 2(mx), 3(t)
+            points[0].remove(); // Delete nx
+            points[1].remove(); // Delete kx
+            points[3].remove(); // Delete t
+
+            // Style the mx point (on the curve) to match the visual spec
+            const mxPoint = points[2];
+            mxPoint.setAttribute('r', '4');             // Same size as expected point
+            mxPoint.style.fill = '#444444';             // Observed curve color (dark grey)
+            mxPoint.style.stroke = '#999999';           // Medium grey contour
+            mxPoint.style.strokeWidth = '1.5px';        // Match contour thickness
+        }
+
+        // 5. Inject CSS variables and classes
+        const svgStyles = `
+            :root {
+                --bg-page: #f9f9f9;
+                --bg-panel: #ffffff;
+                --bg-controls: transparent;
+                --text-dark: #222;
+                --text-main: #333;
+                --text-muted: #666;
+                --text-light: #aaa;
+                --region-obs: #e0e0e0;
+                --region-exp: #f4f0e6;
+                --theme-blue-main: #4682b4;
+                --theme-blue-light: #add8e6;
+                --theme-green-main: #228b22;
+                --theme-green-light: #90ee90;
+                --theme-orange-main: #e67e22;
+                --stroke-thin: 1.5px;
+                --stroke-normal: 2px;
+                --stroke-thick: 2.5px;
+                --stroke-profile: 2.5px;
+                --stroke-profile-obs: 2.5px;
+                --guide-dark: #000;
+                --guide-main: #666;
+                --guide-muted: #999;
+                --guide-light: #bbb;
+                --guide-faded: #ccc;
+                --point-main: #e74c3c;
+                --point-hover: #c0392b;
+                --point-stroke: #fff;
+                --point-expected: #ccc;
+            }
+
+            .axis-line { stroke: var(--text-dark); stroke-width: var(--stroke-normal); fill: none; stroke-linecap: round; }
+            .shaded-region { fill: var(--region-obs); opacity: 0.8; pointer-events: none; }
+            .shaded-region-expected { fill: var(--region-exp); opacity: 0.7; pointer-events: none; }
+            .dist-region-k { fill: var(--theme-blue-light); opacity: 0.5; pointer-events: none; }
+            .dist-curve-k { stroke: var(--theme-blue-main); stroke-width: var(--stroke-normal); fill: none; pointer-events: none; }
+            .dist-region-m { fill: var(--theme-green-light); opacity: 0.5; pointer-events: none; }
+            .dist-curve-m { stroke: var(--theme-green-main); stroke-width: var(--stroke-normal); fill: none; pointer-events: none; }
+            .guide-line, .guide-diagonal, .guide-current-t { stroke: var(--guide-main); stroke-width: var(--stroke-thin); stroke-dasharray: 4, 4; fill: none; }
+            .guide-light, .guide-expected { stroke: var(--guide-faded); stroke-width: var(--stroke-thin); stroke-dasharray: 4, 4; fill: none; }
+            .guide-expected { stroke: var(--guide-light); }
+            .curve-drop { stroke: var(--theme-orange-main); stroke-width: var(--stroke-thick); fill: none; pointer-events: none; }
+            .observed-profile { stroke: #444; stroke-width: var(--stroke-profile-obs); stroke-linejoin: round; stroke-linecap: round; fill: none; pointer-events: none; }
+            .expected-profile { stroke: var(--guide-light); stroke-width: var(--stroke-profile); stroke-linejoin: round; stroke-linecap: round; fill: none; pointer-events: none; stroke-dasharray: 6, 2; }
+            .point { fill: var(--point-main); cursor: pointer; stroke: var(--point-stroke); stroke-width: var(--stroke-normal); transition: fill 0.2s; }
+            .point-expected { fill: var(--point-expected); stroke: var(--guide-muted); stroke-width: var(--stroke-thin); pointer-events: none; }
+            
+            .axis-title { font-size: 12px; fill: #444; font-weight: bold; font-family: 'Inter', sans-serif; }
+            .plot-title { font-size: 12px; fill: var(--text-dark); font-weight: bold; font-family: 'Inter', sans-serif; }
+            .region-label { font-size: 12px; fill: var(--text-muted); pointer-events: none; text-anchor: middle; font-weight: 500; font-family: 'Inter', sans-serif; }
+            .region-label-expected { font-size: 12px; fill: var(--text-light); pointer-events: none; text-anchor: middle; font-weight: 500; font-family: 'Inter', sans-serif; }
+
+            /* MATHJAX */
+            .mjx-container { font-size: 28px; pointer-events: none; font-weight: normal; }
+            .mjx-container svg { shape-rendering: geometricPrecision; display: block; overflow: visible; }
+            .mjx-container svg path { fill: currentColor; stroke: none; }
+        `;
+
+        const styleTag = document.createElement('style');
+        styleTag.textContent = svgStyles;
+        clonedSvg.prepend(styleTag);
+
+        const serializer = new XMLSerializer();
+        let source = serializer.serializeToString(clonedSvg);
+        source = '<?xml version="1.0" standalone="no"?>\r\n' + source;
+
+        const url = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(source);
+        const downloadLink = document.createElement("a");
+        downloadLink.href = url;
+        downloadLink.download = `theoretical_profile_${Date.now()}.svg`;
+
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
+
+        contextMenu.style.display = 'none';
+    });
+}
+
+window.addEventListener('load', () => {
+    setTimeout(() => {
+        setupSvgDownloadMenu();
+    }, 600);
+});
